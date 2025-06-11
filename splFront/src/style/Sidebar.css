@@ -1,0 +1,17 @@
+.sidebar-link {
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  text-decoration: none;
+  transition: background-color 0.3s;
+}
+
+.sidebar-link:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.sidebar-link.active {
+  background-color: #f8f9fa; /* same as Bootstrap bg-light */
+  color: #212529 !important; /* same as Bootstrap text-dark */
+  border-radius: 0.375rem;
+}

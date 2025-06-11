@@ -1,26 +1,34 @@
+import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+
 const Home: React.FC = () => {
   const available = 17;
   const total = 30;
   const used = 222;
 
+  const navigate = useNavigate();
+
+  const handleRegisterClick = () => {
+    navigate('/register');
+  };
+
   return (
     <div style={{ backgroundColor: '#e8f0f2', minHeight: '100vh' }}>
       {/* Navbar */}
-      <nav className="navbar" style={{ backgroundColor: '#3b70a0', color: 'white' }}>
-        <div className="container-fluid">
-          <span className="navbar-brand text-white fw-bold" style={{ fontSize: '1.0rem' }}>
-            SMART
-            <br />
-            PARKING
-          </span>
-          <div className="ms-auto d-flex">
-            <a className="nav-link text-white mx-3" href="#">
-              Home
-            </a>
-            <a className="nav-link text-white" href="#">
-              Login
-            </a>
-          </div>
+      <nav className="navbar px-4" style={{ backgroundColor: '#3b70a0' }}>
+        <span
+          className="navbar-brand text-white fw-bold"
+          style={{ fontFamily: 'Bruno Ace SC, sans-serif' }}
+        >
+          Smart Parking
+        </span>
+        <div className="ms-auto d-flex gap-4">
+          <Link to="/" className="text-white nav-link">
+            Home
+          </Link>
+          <Link to="/login" className="text-white nav-link">
+            Login
+          </Link>
         </div>
       </nav>
 
@@ -65,6 +73,7 @@ const Home: React.FC = () => {
 
         <button
           className="btn"
+          onClick={handleRegisterClick}
           style={{
             backgroundColor: '#cfdde6',
             borderRadius: '2rem',

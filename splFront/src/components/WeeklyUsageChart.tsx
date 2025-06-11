@@ -9,29 +9,41 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 
-const data = [
-  { date: 'May 5th', usage: 13 },
-  { date: 'May 6th', usage: 15 },
-  { date: 'May 7th', usage: 19 },
-  { date: 'May 8th', usage: 11 },
-  { date: 'May 9th', usage: 23 },
-  { date: 'May 10th', usage: 28 },
-  { date: 'May 11th', usage: 10 },
-];
+const generateData = (): { date: string; usage: number }[] => {
+  const today = new Date();
+  const result: { date: string; usage: number }[] = [];
 
-const WeeklyUsageChart: React.FC = () => (
-  <>
-    <h4>Weekly Usage</h4>
-    <ResponsiveContainer width="100%" height={250}>
-      <LineChart data={data}>
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="date" />
-        <YAxis />
-        <Tooltip />
-        <Line type="monotone" dataKey="usage" stroke="#8884d8" strokeWidth={2} dot />
-      </LineChart>
-    </ResponsiveContainer>
-  </>
-);
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(today);
+    d.setDate(today.getDate() - i); // 从6天前到今天
+    const label = d.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+    }); // e.g. "Jun 11"
+    const usage = Math.floor(Math.random() * 20) + 10;
+    result.push({ date: label, usage });
+  }
+
+  return result;
+};
+
+const WeeklyUsageChart: React.FC = () => {
+  const data = generateData(); // 今天会在最后一个 data point
+
+  return (
+    <>
+      <h4>Weekly Usage</h4>
+      <ResponsiveContainer width="100%" height={250}>
+        <LineChart data={data}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="date" />
+          <YAxis />
+          <Tooltip />
+          <Line type="monotone" dataKey="usage" stroke="#8884d8" strokeWidth={2} dot />
+        </LineChart>
+      </ResponsiveContainer>
+    </>
+  );
+};
 
 export default WeeklyUsageChart;

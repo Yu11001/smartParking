@@ -1,5 +1,7 @@
 import React from 'react';
 import { Nav } from 'react-bootstrap';
+import { NavLink } from 'react-router-dom';
+import '../style/Sidebar.css';
 
 const Sidebar: React.FC = () => (
   <div className="text-white vh-100 p-3" style={{ backgroundColor: '#3A6EA5' }}>
@@ -10,12 +12,24 @@ const Sidebar: React.FC = () => (
       <div>Admin</div>
     </div>
     <Nav className="flex-column gap-2">
-      <Nav.Link className="bg-light text-dark rounded px-3">Dashboard</Nav.Link>
-      <Nav.Link className="text-white">Admin Profile</Nav.Link>
-      <Nav.Link className="text-white">Parking Space</Nav.Link>
-      <Nav.Link className="text-white">Licence Plate</Nav.Link>
-      <Nav.Link className="text-white">Auth Requests</Nav.Link>
-      <Nav.Link className="text-white mt-5">Logout</Nav.Link>
+      <NavLink to="/dashboard" className="sidebar-link">
+        Dashboard
+      </NavLink>
+      <NavLink to="/admin-profile" className="sidebar-link">
+        Admin Profile
+      </NavLink>
+      <NavLink to="/parking-space" className="sidebar-link">
+        Parking Space
+      </NavLink>
+      <NavLink to="/licence-plate" className="sidebar-link">
+        Licence Plate
+      </NavLink>
+      <NavLink to="/auth-requests" className="sidebar-link">
+        Auth Requests
+      </NavLink>
+      <NavLink to="/" className="sidebar-link mt-5">
+        Logout
+      </NavLink>
     </Nav>
   </div>
 );

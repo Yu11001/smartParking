@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
+import { Link } from 'react-router-dom';
 
 const Register: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -28,12 +29,12 @@ const Register: React.FC = () => {
           Smart Parking
         </span>
         <div className="ms-auto d-flex gap-4">
-          <a href="#" className="text-white nav-link">
+          <Link to="/" className="text-white nav-link">
             Home
-          </a>
-          <a href="#" className="text-white nav-link">
+          </Link>
+          <Link to="/login" className="text-white nav-link">
             Login
-          </a>
+          </Link>
         </div>
       </nav>
 

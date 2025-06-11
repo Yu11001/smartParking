@@ -1,20 +1,45 @@
-// import Home from './components/Home.tsx';
-// import Register from './components/Register.tsx';
-import React from 'react';
-import { Row, Col } from 'react-bootstrap';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
-// import Dashboard from './components/Dashboard';
-import LicencePlate from './pages/LicencePlate.tsx';
+import Homepage from './pages/Home';
+import Login from './pages/Login';
+import Dashboard from './pages/DashboardPage';
+import AdminProfile from './pages/AdminProfilePage';
+import ParkingSpace from './pages/ParkingSpace';
+import LicencePlate from './pages/LicencePlate';
+import Register from './components/Register';
+import AddAdminProfile from './components/AddAdminProfile';
+import AuthReq from './components/AuthRequests';
+
+const LayoutWithSidebar: React.FC = () => {
+  const location = useLocation();
+  const hideSidebarRoutes = ['/', '/login', '/register'];
+
+  const hideSidebar = hideSidebarRoutes.includes(location.pathname);
+
+  return (
+    <div className="d-flex">
+      {!hideSidebar && <Sidebar />}
+      <div className="flex-grow-1 p-0">
+        <Routes>
+          <Route path="/" element={<Homepage />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/admin-profile" element={<AdminProfile />} />
+          <Route path="/add-admin" element={<AddAdminProfile />} />
+          <Route path="/licence-plate" element={<LicencePlate />} />
+          <Route path="/parking-space" element={<ParkingSpace />} />
+          <Route path="/auth-request" element={<AuthReq />} />
+        </Routes>
+      </div>
+    </div>
+  );
+};
 
 const App: React.FC = () => (
-  <Row className="g-0">
-    <Col md={2}>
-      <Sidebar />
-    </Col>
-    <Col md={10} className="bg-light">
-      <LicencePlate />
-    </Col>
-  </Row>
+  <Router>
+    <LayoutWithSidebar />
+  </Router>
 );
 
 export default App;

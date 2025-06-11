@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Table, Button } from 'react-bootstrap';
+import { Table, Button, Modal } from 'react-bootstrap';
+import '../style/LicencePlateTable.css';
 
 interface PlateEntry {
   id: number;
@@ -16,9 +17,15 @@ const initialData: PlateEntry[] = [
 
 const LicencePlateTable: React.FC = () => {
   const [data, setData] = useState<PlateEntry[]>(initialData);
+  const [showModal, setShowModal] = useState(false);
+  const [targetId, setTargetId] = useState<number | null>(null);
 
-  const handleDelete = (id: number) => {
-    setData((prev) => prev.filter((item) => item.id !== id));
+  const handleDelete = () => {
+    if (targetId !== null) {
+      setData((prev) => prev.filter((item) => item.id !== targetId));
+      setTargetId(null);
+    }
+    setShowModal(false);
   };
 
   const handleEdit = (id: number) => {
@@ -38,6 +45,11 @@ const LicencePlateTable: React.FC = () => {
     ]);
   };
 
+  const handleConfirmDelete = (id: number) => {
+    setTargetId(id);
+    setShowModal(true);
+  };
+
   return (
     <div className="p-3">
       <div className="d-flex justify-content-between align-items-center mb-3">
@@ -46,35 +58,35 @@ const LicencePlateTable: React.FC = () => {
           Add
         </Button>
       </div>
-      <Table bordered hover>
+      <Table bordered>
         <thead className="table-light">
           <tr>
             <th>Id</th>
             <th>Name</th>
             <th>Plate Number</th>
             <th>Email</th>
-            <th>Edit</th>
+            <th className="text-primary">Edit</th>
             <th className="text-danger">Delete</th>
           </tr>
         </thead>
         <tbody>
           {data.map((entry) => (
-            <tr key={entry.id} className="bg-light">
-              <td>{entry.id}</td>
-              <td>{entry.name}</td>
-              <td>{entry.plateNumber}</td>
-              <td>{entry.email}</td>
+            <tr key={entry.id}>
+              <td className="cell-hover">{entry.id}</td>
+              <td className="cell-hover">{entry.name}</td>
+              <td className="cell-hover">{entry.plateNumber}</td>
+              <td className="cell-hover">{entry.email}</td>
               <td
-                className="text-primary"
+                className="text-primary cell-hover"
                 style={{ cursor: 'pointer' }}
                 onClick={() => handleEdit(entry.id)}
               >
                 Edit
               </td>
               <td
-                className="text-danger"
+                className="text-danger cell-hover"
                 style={{ cursor: 'pointer' }}
-                onClick={() => handleDelete(entry.id)}
+                onClick={() => handleConfirmDelete(entry.id)}
               >
                 Delete
               </td>
@@ -82,6 +94,22 @@ const LicencePlateTable: React.FC = () => {
           ))}
         </tbody>
       </Table>
+
+      {/* Delete Confirmation Modal */}
+      <Modal show={showModal} onHide={() => setShowModal(false)} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirm Deletion</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Are you sure you want to delete this entry?</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowModal(false)}>
+            Cancel
+          </Button>
+          <Button variant="danger" onClick={handleDelete}>
+            Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };

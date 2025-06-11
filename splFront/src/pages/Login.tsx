@@ -1,4 +1,5 @@
 import React, { useState, type FormEvent } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Login: React.FC = () => {
   const [username, setUsername] = useState('');
@@ -8,6 +9,12 @@ const Login: React.FC = () => {
     e.preventDefault();
     console.log('Username:', username);
     console.log('Password:', password);
+  };
+
+  const navigate = useNavigate();
+
+  const handleLoginClick = () => {
+    navigate('/dashboard');
   };
 
   return (
@@ -59,6 +66,7 @@ const Login: React.FC = () => {
             <button
               type="submit"
               className="btn"
+              onClick={handleLoginClick}
               style={{
                 backgroundColor: '#cfdde6',
                 borderRadius: '2rem',
