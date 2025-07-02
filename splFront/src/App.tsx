@@ -8,7 +8,8 @@ import ParkingSpace from './pages/ParkingSpace';
 import LicencePlate from './pages/LicencePlate';
 import Register from './components/Register';
 import AddAdminProfile from './components/AddAdminProfile';
-import AuthReq from './components/AuthRequests';
+import AuthRequests from './components/AuthRequests';
+import AddLicencePlate from './components/AddLicencePlate';
 
 const LayoutWithSidebar: React.FC = () => {
   const location = useLocation();
@@ -17,7 +18,7 @@ const LayoutWithSidebar: React.FC = () => {
   const hideSidebar = hideSidebarRoutes.includes(location.pathname);
 
   return (
-    <div className="d-flex">
+    <div className="d-flex" style={{ backgroundColor: 'E8F0F2' }}>
       {!hideSidebar && <Sidebar />}
       <div className="flex-grow-1 p-0">
         <Routes>
@@ -29,7 +30,8 @@ const LayoutWithSidebar: React.FC = () => {
           <Route path="/add-admin" element={<AddAdminProfile />} />
           <Route path="/licence-plate" element={<LicencePlate />} />
           <Route path="/parking-space" element={<ParkingSpace />} />
-          <Route path="/auth-request" element={<AuthReq />} />
+          <Route path="/auth-requests" element={<AuthRequests />} />
+          <Route path="/add-licence" element={<AddLicencePlate />} />
         </Routes>
       </div>
     </div>

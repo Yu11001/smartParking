@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Table, Button, Modal } from 'react-bootstrap';
 import '../style/LicencePlateTable.css';
+import { useNavigate } from 'react-router-dom';
 
 interface PlateEntry {
   id: number;
@@ -19,6 +20,7 @@ const LicencePlateTable: React.FC = () => {
   const [data, setData] = useState<PlateEntry[]>(initialData);
   const [showModal, setShowModal] = useState(false);
   const [targetId, setTargetId] = useState<number | null>(null);
+  const navigate = useNavigate();
 
   const handleDelete = () => {
     if (targetId !== null) {
@@ -32,28 +34,20 @@ const LicencePlateTable: React.FC = () => {
     alert(`Edit record with id ${id}`);
   };
 
-  const handleAdd = () => {
-    const newId = data.length + 1;
-    setData([
-      ...data,
-      {
-        id: newId,
-        name: `user${newId}`,
-        plateNumber: `NEW${newId}`,
-        email: `user${newId}@mail.com`,
-      },
-    ]);
-  };
-
   const handleConfirmDelete = (id: number) => {
     setTargetId(id);
     setShowModal(true);
+  };
+  const handleAdd = () => {
+    navigate('/add-licence');
   };
 
   return (
     <div className="p-3">
       <div className="d-flex justify-content-between align-items-center mb-3">
-        <h4>Licence Plate</h4>
+        <h3 className="mb-4 fw-bold" style={{ color: '#3A6EA5' }}>
+          Licence Plate
+        </h3>
         <Button variant="light" onClick={handleAdd}>
           Add
         </Button>

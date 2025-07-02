@@ -81,7 +81,9 @@ const AdminProfilePage = () => {
   return (
     <div className="p-5 bg-light min-vh-100">
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <h2 style={{ color: '#3A6EA5' }}>Admin Profile</h2>
+        <h3 className="mb-4 fw-bold" style={{ color: '#3A6EA5' }}>
+          Admin Profile
+        </h3>
         <Button
           variant="light"
           className="px-4 py-2 rounded-pill shadow-sm"

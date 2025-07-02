@@ -4,7 +4,10 @@ import { NavLink } from 'react-router-dom';
 import '../style/Sidebar.css';
 
 const Sidebar: React.FC = () => (
-  <div className="text-white vh-100 p-3" style={{ backgroundColor: '#3A6EA5' }}>
+  <div
+    className="text-white vh-100 p-3"
+    style={{ backgroundColor: '#3A6EA5', width: '240px', minWidth: '240px' }}
+  >
     <div className="text-center mb-4">
       <div className="bg-white rounded-circle d-inline-block p-3">
         <span className="text-dark">👤</span>

@@ -39,7 +39,7 @@ const ParkingSpace: React.FC = () => {
   };
 
   return (
-    <Container fluid className="p-4" style={{ backgroundColor: '#eaf3f6', minHeight: '100vh' }}>
+    <Container fluid className="p-4" style={{ backgroundColor: '#E8F0F2', minHeight: '100vh' }}>
       <h3 className="mb-4" style={{ color: '#3A6EA5' }}>
         <b>Parking Space</b>
       </h3>

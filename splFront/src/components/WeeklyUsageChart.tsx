@@ -15,11 +15,11 @@ const generateData = (): { date: string; usage: number }[] => {
 
   for (let i = 6; i >= 0; i--) {
     const d = new Date(today);
-    d.setDate(today.getDate() - i); // 从6天前到今天
+    d.setDate(today.getDate() - i);
     const label = d.toLocaleDateString('en-US', {
       month: 'short',
       day: 'numeric',
-    }); // e.g. "Jun 11"
+    });
     const usage = Math.floor(Math.random() * 20) + 10;
     result.push({ date: label, usage });
   }
@@ -28,11 +28,13 @@ const generateData = (): { date: string; usage: number }[] => {
 };
 
 const WeeklyUsageChart: React.FC = () => {
-  const data = generateData(); // 今天会在最后一个 data point
+  const data = generateData();
 
   return (
     <>
-      <h4>Weekly Usage</h4>
+      <h3 className="mb-4 fw-bold" style={{ color: '#3A6EA5' }}>
+        Weekly Usage
+      </h3>
       <ResponsiveContainer width="100%" height={250}>
         <LineChart data={data}>
           <CartesianGrid strokeDasharray="3 3" />

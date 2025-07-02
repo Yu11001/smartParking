@@ -27,7 +27,7 @@ const AddAdminProfile: React.FC = () => {
     <Container
       fluid
       className="d-flex flex-column align-items-center justify-content-center"
-      style={{ minHeight: '100vh', backgroundColor: '#eaf3f6' }}
+      style={{ minHeight: '100vh', backgroundColor: '#E8F0F2' }}
     >
       <h2 className="mb-4" style={{ color: '#3A6EA5' }}>
         Admin Profile
