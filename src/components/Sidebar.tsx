@@ -16,22 +16,28 @@ const Sidebar: React.FC = () => (
     </div>
     <Nav className="flex-column gap-2">
       <NavLink to="/dashboard" className="sidebar-link">
-        Dashboard
+        <i className="fas fa-tachometer-alt me-2"></i>
+        <span>Dashboard</span>
       </NavLink>
       <NavLink to="/admin-profile" className="sidebar-link">
-        Admin Profile
+        <i className="fas fa-user-shield me-2"></i>
+        <span>Admin Profile</span>
       </NavLink>
       <NavLink to="/parking-space" className="sidebar-link">
-        Parking Space
+        <i className="fas fa-parking me-2"></i>
+        <span>Parking Space</span>
       </NavLink>
       <NavLink to="/licence-plate" className="sidebar-link">
-        Licence Plate
+        <i className="fas fa-id-card me-2"></i>
+        <span>Licence Plate</span>
       </NavLink>
       <NavLink to="/auth-requests" className="sidebar-link">
-        Auth Requests
+        <i className="fas fa-user-check me-2"></i>
+        <span>Auth Requests</span>
       </NavLink>
       <NavLink to="/" className="sidebar-link mt-5">
-        Logout
+        <i className="fas fa-sign-out-alt me-2"></i>
+        <span>Logout</span>
       </NavLink>
     </Nav>
   </div>

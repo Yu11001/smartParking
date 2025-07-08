@@ -1,26 +1,37 @@
 import React, { useState } from 'react';
 import { Form, Button, Container } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
+import useAxios from '../api/axios';
+
 
 const AddAdminProfile: React.FC = () => {
   const navigate = useNavigate();
+  const axios = useAxios();
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
+  const [role, setRole] = useState('operator');
 
-  const handleRegister = () => {
-    const existingAdmins = JSON.parse(localStorage.getItem('adminList') || '[]');
 
-    const newAdmin = {
-      id: existingAdmins.length + 1,
-      username: name,
-      password: '*****',
-    };
+  const handleRegister = async () => {
+    try {
+      const payload = {
+        username: name,
+        email: email,
+        password: password,
+        role: role, 
+      };
 
-    const updatedAdmins = [...existingAdmins, newAdmin];
-    localStorage.setItem('adminList', JSON.stringify(updatedAdmins));
-
-    navigate('/admin-profile');
+      await axios.post('/admin', payload);
+      navigate('/admin-profile');
+    } catch (error: any) {
+      if (error.response) {
+        alert(error.response.data.detail || 'Error creating admin.');
+      } else {
+        alert('Network error or server not responding.');
+      }
+      console.error(error);
+    }
   };
 
   return (
@@ -62,6 +73,18 @@ const AddAdminProfile: React.FC = () => {
             onChange={(e) => setPassword(e.target.value)}
           />
         </Form.Group>
+
+        <Form.Group className="mb-4">
+          <Form.Select
+            className="text-center bg-light border-0 rounded-pill"
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
+          >
+            <option value="admin">Admin</option>
+            <option value="operator">Operator</option>
+          </Form.Select>
+        </Form.Group>
+
 
         <div className="d-grid">
           <Button

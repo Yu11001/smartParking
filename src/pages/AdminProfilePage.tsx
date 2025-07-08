@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { Table, Button, Modal, Form } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
+import useAxios from '../api/axios';
+
+const axiosInstance = useAxios();
 
 interface Admin {
   id: number;
   username: string;
   password: string;
+  role: string;
 }
 
 const AdminProfilePage = () => {
@@ -17,20 +21,18 @@ const AdminProfilePage = () => {
   const [editData, setEditData] = useState<Partial<Admin>>({});
 
   // Load initial data with dummy
-  useEffect(() => {
-    const stored = JSON.parse(localStorage.getItem('adminList') || '[]');
-    if (stored.length === 0) {
-      const defaultAdmins = [
-        { id: 1, username: 'admin', password: 'admin123' },
-        { id: 2, username: 'will', password: 'willpass' },
-        { id: 3, username: 'john', password: 'johnpass' },
-      ];
-      localStorage.setItem('adminList', JSON.stringify(defaultAdmins));
-      setAdminList(defaultAdmins);
-    } else {
-      setAdminList(stored);
+  // Get all admins
+useEffect(() => {
+  const fetchAdmins = async () => {
+    try {
+      const res = await axiosInstance.get('/admin');
+      setAdminList(res.data);
+    } catch (error) {
+      console.error('Failed to fetch admins', error);
     }
-  }, []);
+  };
+  fetchAdmins();
+}, []);
 
   // Delete modal
   const handleDeleteClick = (id: number) => {
@@ -38,20 +40,32 @@ const AdminProfilePage = () => {
     setShowDeleteModal(true);
   };
 
-  const confirmDelete = () => {
-    if (targetId !== null) {
+  const confirmDelete = async () => {
+    if (targetId === null) return;
+
+    try {
+      await axiosInstance.delete(`/admin/${targetId}`);
+
       const updated = adminList.filter((a) => a.id !== targetId);
       setAdminList(updated);
       localStorage.setItem('adminList', JSON.stringify(updated));
+    } catch (error: any) {
+      if (error.response) {
+        alert(error.response.data.detail || 'Failed to delete admin.');
+      } else {
+        alert('Network error or server unavailable.');
+      }
+      console.error(error);
+    } finally {
+      setShowDeleteModal(false);
+      setTargetId(null);
     }
-    setShowDeleteModal(false);
-    setTargetId(null);
   };
 
   // Edit handlers
   const handleEditClick = (admin: Admin) => {
     setEditingId(admin.id);
-    setEditData({ username: admin.username, password: admin.password });
+    setEditData({ username: admin.username, password: admin.password, role: admin.role });
   };
 
   const handleEditChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -59,19 +73,43 @@ const AdminProfilePage = () => {
     setEditData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const saveEdit = () => {
+  const saveEdit = async () => {
     if (editingId !== null) {
-      const updated = adminList.map((admin) =>
-        admin.id === editingId
-          ? { ...admin, username: editData.username || '', password: editData.password || '' }
-          : admin
-      );
-      setAdminList(updated);
-      localStorage.setItem('adminList', JSON.stringify(updated));
-      setEditingId(null);
-      setEditData({});
+      try {
+        const payload: {
+          username?: string;
+          password?: string;
+          role?: string;
+        } = {
+          username: editData.username,
+          role: editData.role,
+        };
+
+        if (editData.password) {
+          payload.password = editData.password;
+        }
+
+        await axiosInstance.patch(`/admin/edit/${editingId}`, payload);
+
+        const updatedList = adminList.map((admin) =>
+          admin.id === editingId
+            ? {
+                ...admin,
+                username: editData.username || '',
+                role: editData.role || '',
+              }
+            : admin
+        );
+
+        setAdminList(updatedList);
+        setEditingId(null);
+        setEditData({});
+      } catch (error) {
+        console.error('Error updating user', error);
+      }
     }
   };
+
 
   const cancelEdit = () => {
     setEditingId(null);
@@ -93,21 +131,20 @@ const AdminProfilePage = () => {
         </Button>
       </div>
 
-      <Table striped bordered hover className="bg-body-secondary">
-        <thead>
+      <Table bordered>
+        <thead className="table-light">
           <tr>
             <th>Id</th>
             <th>Username</th>
             <th>Password</th>
-            <th>Edit</th>
-            <th className="text-danger">Delete</th>
+            <th>Role</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           {adminList.map((admin) => (
-            <tr key={admin.id}>
+            <tr key={admin.id} className="table-row-hover">
               <td>{admin.id}</td>
-
               {editingId === admin.id ? (
                 <>
                   <td>
@@ -121,47 +158,77 @@ const AdminProfilePage = () => {
                   </td>
                   <td>
                     <Form.Control
-                      type="text"
+                      type="password"
                       name="password"
                       value={editData.password || ''}
                       onChange={handleEditChange}
                       size="sm"
                     />
                   </td>
-                  <td className="d-flex gap-2">
-                    <Button variant="success" size="sm" onClick={saveEdit}>
-                      Save
+                  <td>
+                    <Form.Select
+                      name="role"
+                      value={editData.role || ''}
+                      onChange={(e) =>
+                        setEditData((prev) => ({
+                          ...prev,
+                          role: e.target.value,
+                        }))
+                      }
+                      size="sm"
+                    >
+                      <option value="">Select Role</option>
+                      <option value="admin">Admin</option>
+                      <option value="operator">Operator</option>
+                    </Form.Select>
+                  </td>
+                  <td>
+                    <Button
+                      variant="outline-success"
+                      size="sm"
+                      onClick={saveEdit}
+                      className="me-2"
+                    >
+                      <i className="fas fa-save"></i>
                     </Button>
-                    <Button variant="secondary" size="sm" onClick={cancelEdit}>
-                      Cancel
+                    <Button
+                      variant="outline-secondary"
+                      size="sm"
+                      onClick={cancelEdit}
+                    >
+                      <i className="fas fa-times"></i>
                     </Button>
                   </td>
-                  <td />
                 </>
               ) : (
                 <>
                   <td>{admin.username}</td>
-                  <td>{admin.password}</td>
-                  <td
-                    className="text-primary"
-                    style={{ cursor: 'pointer' }}
-                    onClick={() => handleEditClick(admin)}
-                  >
-                    Edit
-                  </td>
-                  <td
-                    className="text-danger"
-                    style={{ cursor: 'pointer' }}
-                    onClick={() => handleDeleteClick(admin.id)}
-                  >
-                    Delete
+                  <td>{'*'.repeat(8)}</td>
+                  <td>{admin.role}</td>
+                  <td>
+                    <Button
+                      variant="outline-primary"
+                      size="sm"
+                      onClick={() => handleEditClick(admin)}
+                      className="me-2"
+                    >
+                      <i className="fas fa-edit"></i>
+                    </Button>
+                    <Button
+                      variant="outline-danger"
+                      size="sm"
+                      onClick={() => handleDeleteClick(admin.id)}
+                    >
+                      <i className="fas fa-trash"></i>
+                    </Button>
                   </td>
                 </>
               )}
             </tr>
-          ))}
-        </tbody>
-      </Table>
+        ))}
+      </tbody>
+    </Table>
+
 
       {/* Confirm Delete Modal */}
       <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)} centered>

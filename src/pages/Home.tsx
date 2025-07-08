@@ -1,16 +1,38 @@
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
+import useAxios from '../api/axios';
+
+interface ParkingSnapshot {
+  available_spaces: number;
+  total_spaces: number;
+}
 
 const Home: React.FC = () => {
-  const available = 17;
-  const total = 30;
-  const used = 222;
-
+  const [snapshot, setSnapshot] = useState<ParkingSnapshot | null>(null);
   const navigate = useNavigate();
+  const axios = useAxios();
+
+  useEffect(() => {
+    const fetchSnapshot = async () => {
+      try {
+        const response = await axios.get('/parking/snapshot/latest');
+        setSnapshot(response.data);
+      } catch (error) {
+        console.error('Error fetching parking snapshot:', error);
+      }
+    };
+
+    fetchSnapshot();
+  }, []);
 
   const handleRegisterClick = () => {
     navigate('/register');
   };
+
+  const occupiedSpaces = snapshot
+    ? snapshot.total_spaces - snapshot.available_spaces
+    : 0;
 
   return (
     <div style={{ backgroundColor: '#e8f0f2', minHeight: '100vh' }}>
@@ -48,13 +70,13 @@ const Home: React.FC = () => {
               }}
             >
               <span className="fs-4" style={{ color: '#3A6EA5' }}>
-                {available}/{total}
+                {snapshot?.available_spaces ?? 0}/{snapshot?.total_spaces ?? 0}
               </span>
             </div>
           </div>
           <div className="col-md-3">
             <h4 className="mb-3 fw-semibold" style={{ color: '#3A6EA5' }}>
-              Used
+              Occupied
             </h4>
             <div
               className="d-flex align-items-center justify-content-center"
@@ -65,7 +87,7 @@ const Home: React.FC = () => {
               }}
             >
               <span className="fs-4" style={{ color: '#3A6EA5' }}>
-                {used}
+                {occupiedSpaces}
               </span>
             </div>
           </div>

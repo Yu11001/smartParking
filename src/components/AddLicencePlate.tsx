@@ -1,16 +1,45 @@
 import React, { useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
+import useAxios from '../api/axios';
 
 const AddLicencePlate: React.FC = () => {
+  const axios = useAxios();
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [plateNumber, setPlateNumber] = useState('');
   const [photo, setPhoto] = useState<File | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log({ email, name, plateNumber, photo });
-    toast.success('Licence plate added successfully!');
+
+    if (!photo) {
+      toast.error('Please upload a photo.');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('email', email);
+    formData.append('name', name);
+    formData.append('plateNumber', plateNumber);
+    formData.append('photo', photo);
+
+    try {
+      const response = await axios.post('/plates', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      console.log(response.data);
+      toast.success('Licence plate added successfully!');
+      // Reset form
+      setEmail('');
+      setName('');
+      setPlateNumber('');
+      setPhoto(null);
+    } catch (error) {
+      console.error('Error adding licence plate:', error);
+      toast.error('Failed to add licence plate.');
+    }
   };
 
   return (

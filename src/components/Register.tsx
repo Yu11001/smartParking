@@ -1,20 +1,45 @@
 import React, { useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import { Link } from 'react-router-dom';
+import useAxios from '../api/axios';
 
 const Register: React.FC = () => {
+  const axiosInstance = useAxios()
+
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [plateNumber, setPlateNumber] = useState('');
   const [photo, setPhoto] = useState<File | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log({ email, name, plateNumber, photo });
-  };
-  const notify = () => {
-    toast('Successfully registered! Please check your email for results:)');
-  };
+  const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+
+  if (!photo) {
+    toast.error("Please upload a photo.");
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append('name', name);
+  formData.append('email', email);
+  formData.append('plate_number', plateNumber);
+  formData.append('photo', photo);
+
+  try {
+    const response = await axiosInstance.post('/register', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+
+    console.log(response.data);
+    toast.success("Successfully registered!");
+  } catch (error: any) {
+    console.error(error);
+    toast.error("Failed to register. Please try again.");
+  }
+};
+
 
   return (
     <div
@@ -111,7 +136,6 @@ const Register: React.FC = () => {
               type="submit"
               className="btn bg-opacity-50 px-5 rounded-3 btn-outline-secondary"
               style={{ color: '#3A6EA5', whiteSpace: 'pre-line' }}
-              onClick={notify}
             >
               Register
             </button>

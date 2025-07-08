@@ -1,20 +1,45 @@
-import React, { useState, type FormEvent } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import type { FormEvent } from 'react';
+import { useNavigate } from 'react-router-dom';
+import useAxios from '../api/axios';
 
 const Login: React.FC = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    console.log('Username:', username);
-    console.log('Password:', password);
-  };
-
+  const [error, setError] = useState<string | null>(null);
+  const axiosInstance = useAxios()
   const navigate = useNavigate();
 
-  const handleLoginClick = () => {
-    navigate('/dashboard');
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    setError(null);
+
+    const formData = new URLSearchParams();
+    formData.append('username', username);
+    formData.append('password', password);
+
+    try {
+      const res = await axiosInstance.post(
+        '/login', 
+        formData,
+        {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+        }
+      );
+
+      const { access_token } = res.data;
+
+      // Save token in localStorage or context
+      localStorage.setItem('token', access_token);
+
+      // Navigate only on success
+      navigate('/dashboard');
+    } catch (err: any) {
+      setError('Invalid username or password');
+      console.error(err);
+    }
   };
 
   return (
@@ -66,7 +91,7 @@ const Login: React.FC = () => {
             <button
               type="submit"
               className="btn"
-              onClick={handleLoginClick}
+              onClick={handleSubmit}
               style={{
                 backgroundColor: '#cfdde6',
                 borderRadius: '2rem',
