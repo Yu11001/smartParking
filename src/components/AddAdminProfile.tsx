@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import { Form, Button, Container } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import useAxios from '../api/axios';
+import axios from '../api/axios';
 
 
 const AddAdminProfile: React.FC = () => {
   const navigate = useNavigate();
-  const axios = useAxios();
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
@@ -22,7 +21,7 @@ const AddAdminProfile: React.FC = () => {
         role: role, 
       };
 
-      await axios.post('/admin', payload);
+      await axios.post('/admins', payload);
       navigate('/admin-profile');
     } catch (error: any) {
       if (error.response) {

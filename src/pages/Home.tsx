@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
-import useAxios from '../api/axios';
+import axios from '../api/axios';
 
 interface ParkingSnapshot {
   available_spaces: number;
@@ -11,7 +11,6 @@ interface ParkingSnapshot {
 const Home: React.FC = () => {
   const [snapshot, setSnapshot] = useState<ParkingSnapshot | null>(null);
   const navigate = useNavigate();
-  const axios = useAxios();
 
   useEffect(() => {
     const fetchSnapshot = async () => {

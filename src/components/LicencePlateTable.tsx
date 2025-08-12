@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Button, Modal, Spinner } from 'react-bootstrap';
+import { Table, Button, Modal, Spinner, Pagination } from 'react-bootstrap';
 import '../style/LicencePlateTable.css';
 import { useNavigate } from 'react-router-dom';
-import useAxios from '../api/axios';
+import axiosInstance from '../api/axios';
 
 interface PlateEntry {
   id: number;
@@ -24,18 +24,24 @@ const LicencePlateTable: React.FC = () => {
   const [editEntry, setEditEntry] = useState<PlateEntry | null>(null);
   const [editForm, setEditForm] = useState({
     plate_number: '',
-    plate_image_url: '',
     user_email: '',
+    username: '',
   });
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
 
   const navigate = useNavigate();
-  const axiosInstance = useAxios();
 
   useEffect(() => {
-  const fetchData = async () => {
-    try {
-      const res = await axiosInstance.get('/plates');
-      setData(res.data);
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const params = new URLSearchParams();
+        params.append('page', currentPage.toString());
+        params.append('limit', itemsPerPage.toString());
+        const res = await axiosInstance.get(`/plates?${params.toString()}`);
+        setData(res.data);
       } catch (err) {
         console.error(err);
       } finally {
@@ -44,14 +50,20 @@ const LicencePlateTable: React.FC = () => {
     };
 
     fetchData();
-  }, []);
+  }, [currentPage]);
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (targetId !== null) {
-      setData((prev) => prev.filter((item) => item.id !== targetId));
-      setTargetId(null);
+      try {
+        await axiosInstance.delete(`/plates/${targetId}`);
+        setData((prev) => prev.filter((item) => item.id !== targetId));
+      } catch (err) {
+        console.error('Delete failed:', err);
+      } finally {
+        setTargetId(null);
+        setShowModal(false);
+      }
     }
-    setShowModal(false);
   };
 
   const handleEdit = (id: number) => {
@@ -60,8 +72,8 @@ const LicencePlateTable: React.FC = () => {
       setEditEntry(entry);
       setEditForm({
         plate_number: entry.plate_number,
-        plate_image_url: entry.plate_image_url,
         user_email: entry.user.email,
+        username: entry.user.name,
       });
       setShowEditModal(true);
     }
@@ -70,27 +82,29 @@ const LicencePlateTable: React.FC = () => {
   const handleEditSubmit = async () => {
     if (!editEntry) return;
 
-    const updatedData = {
-      plate_number: editForm.plate_number,
-      plate_image_url: editForm.plate_image_url,
-      user_email: editForm.user_email,
-    };
+    const formData = new FormData();
+    formData.append('plate_number', editForm.plate_number);
+    formData.append('user_email', editForm.user_email);
+    formData.append('username', editForm.username);
+    if (selectedFile) {
+      formData.append('file', selectedFile);
+    }
 
     try {
-      await axiosInstance.put(`/plates/${editEntry.id}`, updatedData);
+      const res = await axiosInstance.put(
+        `/plates/${editEntry.id}`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
       setData((prev) =>
-        prev.map((item) =>
-          item.id === editEntry.id
-            ? {
-                ...item,
-                plate_number: editForm.plate_number,
-                plate_image_url: editForm.plate_image_url,
-                user: { ...item.user, email: editForm.user_email },
-              }
-            : item
-        )
+        prev.map((item) => (item.id === editEntry.id ? res.data : item))
       );
       setShowEditModal(false);
+      setSelectedFile(null);
     } catch (err) {
       console.error('Update failed:', err);
     }
@@ -135,9 +149,9 @@ const LicencePlateTable: React.FC = () => {
           </tr>
         </thead>
         <tbody>
-          {data.map((entry) => (
+          {data.map((entry, index) => (
             <tr key={entry.id} className="table-row-hover">
-              <td>{entry.id}</td>
+              <td>{index + 1}</td>
               <td>{entry.user.name}</td>
               <td>{entry.plate_number}</td>
               <td>{entry.user.email}</td>
@@ -174,6 +188,14 @@ const LicencePlateTable: React.FC = () => {
         </tbody>
       </Table>
 
+      <div className="d-flex justify-content-center">
+        <Pagination>
+          <Pagination.Prev onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1} />
+          <Pagination.Item>{currentPage}</Pagination.Item>
+          <Pagination.Next onClick={() => setCurrentPage(currentPage + 1)} disabled={data.length < itemsPerPage} />
+        </Pagination>
+      </div>
+
       {/* Delete Confirmation Modal */}
       <Modal show={showModal} onHide={() => setShowModal(false)} centered>
         <Modal.Header closeButton>
@@ -208,13 +230,12 @@ const LicencePlateTable: React.FC = () => {
             />
           </div>
           <div className="mb-3">
-            <label className="form-label">Image URL</label>
+            <label className="form-label">Image</label>
             <input
-              type="text"
+              type="file"
               className="form-control"
-              value={editForm.plate_image_url}
               onChange={(e) =>
-                setEditForm({ ...editForm, plate_image_url: e.target.value })
+                setSelectedFile(e.target.files ? e.target.files[0] : null)
               }
             />
           </div>
@@ -227,6 +248,17 @@ const LicencePlateTable: React.FC = () => {
               value={editForm.user_email}
               onChange={(e) =>
                 setEditForm({ ...editForm, user_email: e.target.value })
+              }
+            />
+          </div>
+          <div className="mb-3">
+            <label className="form-label">Username</label>
+            <input
+              type="text"
+              className="form-control"
+              value={editForm.username}
+              onChange={(e) =>
+                setEditForm({ ...editForm, username: e.target.value })
               }
             />
           </div>

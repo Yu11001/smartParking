@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import { Link } from 'react-router-dom';
-import useAxios from '../api/axios';
+import axiosInstance from '../api/axios';
 
 const Register: React.FC = () => {
-  const axiosInstance = useAxios()
 
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');

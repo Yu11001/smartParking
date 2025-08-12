@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Container } from 'react-bootstrap';
 import DashboardCards from '../components/DashboardCards';
 import WeeklyUsageChart from '../components/WeeklyUsageChart';
-import useAxios from '../api/axios';
+import axios from '../api/axios';
 
 interface ParkingSnapshot {
   available_spaces: number;
@@ -11,7 +11,6 @@ interface ParkingSnapshot {
 
 const DashboardPage: React.FC = () => {
   const [snapshot, setSnapshot] = useState<ParkingSnapshot | null>(null);
-  const axios = useAxios();
 
   useEffect(() => {
     const fetchSnapshot = async () => {

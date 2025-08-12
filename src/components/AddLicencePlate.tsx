@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
-import useAxios from '../api/axios';
+import axios from '../api/axios';
 
 const AddLicencePlate: React.FC = () => {
-  const axios = useAxios();
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [plateNumber, setPlateNumber] = useState('');

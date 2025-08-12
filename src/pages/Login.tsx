@@ -1,18 +1,23 @@
 import React, { useState } from 'react';
 import type { FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
-import useAxios from '../api/axios';
+import axiosInstance from '../api/axios';
 
 const Login: React.FC = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
-  const axiosInstance = useAxios()
   const navigate = useNavigate();
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError(null);
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(username)) {
+      setError('Invalid email format');
+      return;
+    }
 
     const formData = new URLSearchParams();
     formData.append('username', username);
@@ -37,7 +42,7 @@ const Login: React.FC = () => {
       // Navigate only on success
       navigate('/dashboard');
     } catch (err: any) {
-      setError('Invalid username or password');
+      setError('Invalid email or password');
       console.error(err);
     }
   };
@@ -58,9 +63,10 @@ const Login: React.FC = () => {
         <h2 className="text-center mb-4 fw-bold" style={{ fontSize: '2rem' }}>
           Welcome back
         </h2>
+        {error && <div className="alert alert-danger">{error}</div>}
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
-            <label className="form-label text-muted">username:</label>
+            <label className="form-label text-muted">Email:</label>
             <input
               type="text"
               className="form-control"

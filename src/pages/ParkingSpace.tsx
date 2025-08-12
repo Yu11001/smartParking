@@ -1,30 +1,31 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Button, Container } from 'react-bootstrap';
-import { Camera } from 'react-bootstrap-icons';
+import Hls from 'hls.js';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+const streams = ['parking', 'parking2', 'license', 'license1'];
+
 const ParkingSpace: React.FC = () => {
+  const [streamIndex, setStreamIndex] = useState(0);
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
-    navigator.mediaDevices
-      .getUserMedia({ video: true })
-      .then((stream) => {
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-        }
-      })
-      .catch((err) => {
-        console.error('Error accessing camera: ', err);
+    const video = videoRef.current;
+    if (video) {
+      const hls = new Hls();
+      const streamUrl = `/${streams[streamIndex]}/index.m3u8`;
+      hls.loadSource(streamUrl);
+      hls.attachMedia(video);
+      hls.on(Hls.Events.MANIFEST_PARSED, () => {
+        video.play();
       });
+    }
+  }, [streamIndex]);
 
-    return () => {
-      if (videoRef.current?.srcObject instanceof MediaStream) {
-        videoRef.current.srcObject.getTracks().forEach((track) => track.stop());
-      }
-    };
-  }, []);
+  const handleSwitchStream = () => {
+    setStreamIndex((prevIndex) => (prevIndex + 1) % streams.length);
+  };
 
   const handleOpenGate = () => {
     toast.success('Gate is opening...', {
@@ -57,19 +58,22 @@ const ParkingSpace: React.FC = () => {
         >
           <video
             ref={videoRef}
-            autoPlay
-            muted
-            playsInline
-            style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '10px' }}
+            controls
+            style={{ width: '100%', height: '100%', border: 'none', borderRadius: '10px' }}
           />
-          {!videoRef.current?.srcObject && (
-            <Camera size={64} className="position-absolute text-secondary" />
-          )}
         </div>
       </div>
 
       <div className="d-flex justify-content-center mt-3">
-        <div style={{ maxWidth: '800px', width: '100%' }} className="d-flex justify-content-end">
+        <div style={{ maxWidth: '800px', width: '100%' }} className="d-flex justify-content-between">
+          <Button
+            variant="light"
+            className="rounded-pill px-4"
+            style={{ backgroundColor: '#c5d8e3', border: 'none', color: '#2c4965' }}
+            onClick={handleSwitchStream}
+          >
+            Switch Stream
+          </Button>
           <Button
             variant="light"
             className="rounded-pill px-4"

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Button, Spinner } from 'react-bootstrap';
+import { Table, Button, Spinner, Dropdown, Pagination } from 'react-bootstrap';
 import { FaCheck, FaTimes } from 'react-icons/fa';
-import useAxios from '../api/axios';
+import axiosInstance from '../api/axios';
 
 interface AuthRequest {
   id: number;
@@ -13,13 +13,23 @@ interface AuthRequest {
 }
 
 const AuthRequests: React.FC = () => {
-  const axiosInstance = useAxios();
   const [requests, setRequests] = useState<AuthRequest[]>([]);
   const [loading, setLoading] = useState(true);
+  const [statusFilter, setStatusFilter] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10); // or get from backend
 
   const fetchRequests = async () => {
+    setLoading(true);
     try {
-      const response = await axiosInstance.get('/requests');
+      const params = new URLSearchParams();
+      if (statusFilter) {
+        params.append('status', statusFilter);
+      }
+      params.append('page', currentPage.toString());
+      params.append('limit', itemsPerPage.toString());
+
+      const response = await axiosInstance.get(`/requests?${params.toString()}`);
       const data = response.data.map((req: any) => ({
         id: req.id,
         plateNumber: req.plate_number,
@@ -38,7 +48,7 @@ const AuthRequests: React.FC = () => {
 
   useEffect(() => {
     fetchRequests();
-  }, []);
+  }, [statusFilter, currentPage]);
 
   const handleStatusUpdate = async (id: number, newStatus: 'approved' | 'rejected') => {
     try {
@@ -59,9 +69,22 @@ const AuthRequests: React.FC = () => {
 
   return (
     <div className="p-3">
-      <h3 className="mb-4 fw-bold" style={{ color: '#3A6EA5' }}>
-        Authorization Requests
-      </h3>
+      <div className="d-flex justify-content-between align-items-center mb-3">
+        <h3 className="mb-4 fw-bold" style={{ color: '#3A6EA5' }}>
+          Authorization Requests
+        </h3>
+        <Dropdown onSelect={(e) => setStatusFilter(e === 'all' ? null : e)}>
+          <Dropdown.Toggle variant="secondary" id="dropdown-basic">
+            Filter by Status: {statusFilter || 'All'}
+          </Dropdown.Toggle>
+          <Dropdown.Menu>
+            <Dropdown.Item eventKey="all">All</Dropdown.Item>
+            <Dropdown.Item eventKey="pending">Pending</Dropdown.Item>
+            <Dropdown.Item eventKey="approved">Approved</Dropdown.Item>
+            <Dropdown.Item eventKey="rejected">Rejected</Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
+      </div>
       <Table bordered>
         <thead className="table-light">
           <tr>
@@ -114,6 +137,13 @@ const AuthRequests: React.FC = () => {
           ))}
         </tbody>
       </Table>
+      <div className="d-flex justify-content-center">
+        <Pagination>
+          <Pagination.Prev onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1} />
+          <Pagination.Item>{currentPage}</Pagination.Item>
+          <Pagination.Next onClick={() => setCurrentPage(currentPage + 1)} disabled={requests.length < itemsPerPage} />
+        </Pagination>
+      </div>
     </div>
   );
 };

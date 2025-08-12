@@ -10,12 +10,19 @@ import Register from './components/Register';
 import AddAdminProfile from './components/AddAdminProfile';
 import AuthRequests from './components/AuthRequests';
 import AddLicencePlate from './components/AddLicencePlate';
+import ProtectedRoute from './components/ProtectedRoute';
+import NotFoundPage from './pages/NotFoundPage';
 
-const LayoutWithSidebar: React.FC = () => {
+const AppContent: React.FC = () => {
   const location = useLocation();
   const hideSidebarRoutes = ['/', '/login', '/register'];
 
-  const hideSidebar = hideSidebarRoutes.includes(location.pathname);
+  const isKnownRoute = [
+    '/', '/login', '/register', '/dashboard', '/admin-profile', 
+    '/add-admin', '/licence-plate', '/parking-space', '/auth-requests', '/add-licence'
+  ].includes(location.pathname);
+
+  const hideSidebar = hideSidebarRoutes.includes(location.pathname) || !isKnownRoute;
 
   return (
     <div className="d-flex" style={{ backgroundColor: 'E8F0F2' }}>
@@ -25,13 +32,16 @@ const LayoutWithSidebar: React.FC = () => {
           <Route path="/" element={<Homepage />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/admin-profile" element={<AdminProfile />} />
-          <Route path="/add-admin" element={<AddAdminProfile />} />
-          <Route path="/licence-plate" element={<LicencePlate />} />
-          <Route path="/parking-space" element={<ParkingSpace />} />
-          <Route path="/auth-requests" element={<AuthRequests />} />
-          <Route path="/add-licence" element={<AddLicencePlate />} />
+          <Route element={<ProtectedRoute />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/admin-profile" element={<AdminProfile />} />
+            <Route path="/add-admin" element={<AddAdminProfile />} />
+            <Route path="/licence-plate" element={<LicencePlate />} />
+            <Route path="/parking-space" element={<ParkingSpace />} />
+            <Route path="/auth-requests" element={<AuthRequests />} />
+            <Route path="/add-licence" element={<AddLicencePlate />} />
+          </Route>
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </div>
     </div>
@@ -40,7 +50,7 @@ const LayoutWithSidebar: React.FC = () => {
 
 const App: React.FC = () => (
   <Router>
-    <LayoutWithSidebar />
+    <AppContent />
   </Router>
 );
 

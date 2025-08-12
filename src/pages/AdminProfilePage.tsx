@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Button, Modal, Form } from 'react-bootstrap';
+import { Table, Button, Modal, Form, Pagination } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import useAxios from '../api/axios';
-
-const axiosInstance = useAxios();
+import axiosInstance from '../api/axios';
 
 interface Admin {
   id: number;
@@ -19,20 +17,31 @@ const AdminProfilePage = () => {
   const [targetId, setTargetId] = useState<number | null>(null);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editData, setEditData] = useState<Partial<Admin>>({});
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
+  const [total_pages, setTotalPages] = useState(0);
 
   // Load initial data with dummy
   // Get all admins
-useEffect(() => {
-  const fetchAdmins = async () => {
-    try {
-      const res = await axiosInstance.get('/admin');
-      setAdminList(res.data);
-    } catch (error) {
-      console.error('Failed to fetch admins', error);
-    }
-  };
-  fetchAdmins();
-}, []);
+  useEffect(() => {
+    const fetchAdmins = async () => {
+      try {
+        const params = new URLSearchParams();
+        params.append('page', currentPage.toString());
+        params.append('limit', itemsPerPage.toString());
+        const res = await axiosInstance.get(`/admins?${params.toString()}`);
+        if (Array.isArray(res.data)) {
+          setAdminList(res.data);
+        } else {
+          setAdminList(res.data.admins);
+          setTotalPages(res.data.total_pages);
+        }
+      } catch (error) {
+        console.error('Failed to fetch admins', error);
+      }
+    };
+    fetchAdmins();
+  }, [currentPage]);
 
   // Delete modal
   const handleDeleteClick = (id: number) => {
@@ -44,7 +53,7 @@ useEffect(() => {
     if (targetId === null) return;
 
     try {
-      await axiosInstance.delete(`/admin/${targetId}`);
+      await axiosInstance.delete(`/admins/${targetId}`);
 
       const updated = adminList.filter((a) => a.id !== targetId);
       setAdminList(updated);
@@ -89,7 +98,7 @@ useEffect(() => {
           payload.password = editData.password;
         }
 
-        await axiosInstance.patch(`/admin/edit/${editingId}`, payload);
+        await axiosInstance.patch(`/admins/${editingId}`, payload);
 
         const updatedList = adminList.map((admin) =>
           admin.id === editingId
@@ -142,9 +151,9 @@ useEffect(() => {
           </tr>
         </thead>
         <tbody>
-          {adminList.map((admin) => (
+          {adminList.map((admin, index) => (
             <tr key={admin.id} className="table-row-hover">
-              <td>{admin.id}</td>
+              <td>{index + 1}</td>
               {editingId === admin.id ? (
                 <>
                   <td>
@@ -225,10 +234,17 @@ useEffect(() => {
                 </>
               )}
             </tr>
-        ))}
-      </tbody>
-    </Table>
+          ))}
+        </tbody>
+      </Table>
 
+      <div className="d-flex justify-content-center">
+        <Pagination>
+          <Pagination.Prev onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1} />
+          <Pagination.Item>{currentPage}</Pagination.Item>
+          <Pagination.Next onClick={() => setCurrentPage(currentPage + 1)} disabled={currentPage === total_pages} />
+        </Pagination>
+      </div>
 
       {/* Confirm Delete Modal */}
       <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)} centered>
