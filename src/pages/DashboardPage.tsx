@@ -12,6 +12,7 @@ interface ParkingSnapshot {
 const DashboardPage: React.FC = () => {
   const [snapshot, setSnapshot] = useState<ParkingSnapshot | null>(null);
   const axios = useAxios();
+  const [lastUpdated, setLastUpdated] = useState<string>('N/A');
 
   useEffect(() => {
     const fetchSnapshot = async () => {
@@ -20,6 +21,8 @@ const DashboardPage: React.FC = () => {
         setSnapshot(response.data);
       } catch (error) {
         console.error('Error fetching parking snapshot:', error);
+      } finally {
+        setLastUpdated(new Date().toLocaleString());
       }
     };
 
@@ -28,8 +31,13 @@ const DashboardPage: React.FC = () => {
 
   return (
     <Container className="pt-4">
-      <h1 className="mb-4">Dashboard</h1>
+      <h2 className="mb-4" style={{ color: '#3A6EA5' }}>
+        CAMT Parking Overview
+      </h2>
       <DashboardCards snapshot={snapshot} />
+      <p className="mt-3 text-muted" style={{ fontSize: '0.9rem' }}>
+        Last updated: {lastUpdated}
+      </p>
       <div className="my-5">
         <WeeklyUsageChart />
       </div>

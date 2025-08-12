@@ -10,6 +10,7 @@ interface ParkingSnapshot {
 
 const Home: React.FC = () => {
   const [snapshot, setSnapshot] = useState<ParkingSnapshot | null>(null);
+  const [lastUpdated, setLastUpdated] = useState<string>('N/A');
   const navigate = useNavigate();
   const axios = useAxios();
 
@@ -18,6 +19,7 @@ const Home: React.FC = () => {
       try {
         const response = await axios.get('/parking/snapshot/latest');
         setSnapshot(response.data);
+        setLastUpdated(new Date().toLocaleString());
       } catch (error) {
         console.error('Error fetching parking snapshot:', error);
       }
@@ -30,9 +32,7 @@ const Home: React.FC = () => {
     navigate('/register');
   };
 
-  const occupiedSpaces = snapshot
-    ? snapshot.total_spaces - snapshot.available_spaces
-    : 0;
+  const occupiedSpaces = snapshot ? snapshot.total_spaces - snapshot.available_spaces : 0;
 
   return (
     <div style={{ backgroundColor: '#e8f0f2', minHeight: '100vh' }}>
@@ -56,27 +56,49 @@ const Home: React.FC = () => {
 
       {/* Main Content */}
       <div className="container py-5 text-center center">
-        <div className="row justify-content-center mb-5">
+        <h3 className="container text-justify" style={{ color: '#3A6EA5' }}>
+          CAMT Smart Parking Lot: Real time Avaliability
+        </h3>
+        <br />
+        <br />
+        <div className="row justify-content-center mb-5 bg-green-600">
           <div className="col-md-3">
-            <h4 className="mb-3 fw-semibold" style={{ color: '#3A6EA5' }}>
+            <h4 className="mb-3 fw-semibold" style={{ color: '#16a34a' }}>
               Available
             </h4>
             <div
               className="d-flex align-items-center justify-content-center"
               style={{
-                backgroundColor: '#cfdde6',
+                backgroundColor: '#bbf7d0',
                 borderRadius: '1rem',
                 height: '150px',
               }}
             >
-              <span className="fs-4" style={{ color: '#3A6EA5' }}>
-                {snapshot?.available_spaces ?? 0}/{snapshot?.total_spaces ?? 0}
+              <span className="fs-4" style={{ color: '#15803d' }}>
+                {snapshot?.available_spaces ?? 0}
+              </span>
+            </div>
+          </div>
+          <div className="col-md-3">
+            <h4 className="mb-3 fw-semibold" style={{ color: '#dc2626' }}>
+              Occupied
+            </h4>
+            <div
+              className="d-flex align-items-center justify-content-center"
+              style={{
+                backgroundColor: '#fecaca',
+                borderRadius: '1rem',
+                height: '150px',
+              }}
+            >
+              <span className="fs-4" style={{ color: '#b91c1c' }}>
+                {occupiedSpaces}
               </span>
             </div>
           </div>
           <div className="col-md-3">
             <h4 className="mb-3 fw-semibold" style={{ color: '#3A6EA5' }}>
-              Occupied
+              Total Slots
             </h4>
             <div
               className="d-flex align-items-center justify-content-center"
@@ -87,12 +109,11 @@ const Home: React.FC = () => {
               }}
             >
               <span className="fs-4" style={{ color: '#3A6EA5' }}>
-                {occupiedSpaces}
+                {snapshot?.total_spaces ?? 0}
               </span>
             </div>
           </div>
         </div>
-
         <button
           className="btn"
           onClick={handleRegisterClick}
@@ -104,8 +125,11 @@ const Home: React.FC = () => {
             fontWeight: '500',
           }}
         >
-          Register
+          <b>Register License Plate</b>
         </button>
+        <p className="mt-3 text-muted" style={{ fontSize: '0.9rem' }}>
+          Last updated: {lastUpdated}
+        </p>
       </div>
     </div>
   );

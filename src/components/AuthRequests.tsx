@@ -45,7 +45,9 @@ const AuthRequests: React.FC = () => {
       await axiosInstance.put(`/requests/${id}`, { status: newStatus });
       setRequests((prev) =>
         prev.map((req) =>
-          req.id === id ? { ...req, status: newStatus.charAt(0).toUpperCase() + newStatus.slice(1) } : req
+          req.id === id
+            ? { ...req, status: newStatus.charAt(0).toUpperCase() + newStatus.slice(1) }
+            : req
         )
       );
     } catch (error) {
@@ -95,6 +97,7 @@ const AuthRequests: React.FC = () => {
                       size="sm"
                       className="me-2"
                       onClick={() => handleStatusUpdate(req.id, 'approved')}
+                      title="Approve"
                     >
                       <FaCheck />
                     </Button>
@@ -102,6 +105,7 @@ const AuthRequests: React.FC = () => {
                       variant="outline-danger"
                       size="sm"
                       onClick={() => handleStatusUpdate(req.id, 'rejected')}
+                      title="Reject"
                     >
                       <FaTimes />
                     </Button>

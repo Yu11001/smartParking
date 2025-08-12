@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { Button, Container } from 'react-bootstrap';
 import { Camera } from 'react-bootstrap-icons';
 import { toast, ToastContainer } from 'react-toastify';
@@ -6,6 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const ParkingSpace: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [lastUpdated, setLastUpdated] = useState<string>('N/A');
 
   useEffect(() => {
     navigator.mediaDevices
@@ -14,6 +15,7 @@ const ParkingSpace: React.FC = () => {
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
         }
+        setLastUpdated(new Date().toLocaleString());
       })
       .catch((err) => {
         console.error('Error accessing camera: ', err);
@@ -41,7 +43,7 @@ const ParkingSpace: React.FC = () => {
   return (
     <Container fluid className="p-4" style={{ backgroundColor: '#E8F0F2', minHeight: '100vh' }}>
       <h3 className="mb-4" style={{ color: '#3A6EA5' }}>
-        <b>Parking Space</b>
+        <b>CAMT Live Feed</b>
       </h3>
 
       <div className="d-flex justify-content-center">
@@ -76,10 +78,13 @@ const ParkingSpace: React.FC = () => {
             style={{ backgroundColor: '#c5d8e3', border: 'none', color: '#2c4965' }}
             onClick={handleOpenGate}
           >
-            Open Gate
+            Click to Open Gate
           </Button>
         </div>
       </div>
+      <p className="text-muted text-center mt-2" style={{ fontSize: '0.9rem' }}>
+        Last updated: {lastUpdated}
+      </p>
       <ToastContainer />
     </Container>
   );

@@ -22,17 +22,17 @@ const AdminProfilePage = () => {
 
   // Load initial data with dummy
   // Get all admins
-useEffect(() => {
-  const fetchAdmins = async () => {
-    try {
-      const res = await axiosInstance.get('/admin');
-      setAdminList(res.data);
-    } catch (error) {
-      console.error('Failed to fetch admins', error);
-    }
-  };
-  fetchAdmins();
-}, []);
+  useEffect(() => {
+    const fetchAdmins = async () => {
+      try {
+        const res = await axiosInstance.get('/admin');
+        setAdminList(res.data);
+      } catch (error) {
+        console.error('Failed to fetch admins', error);
+      }
+    };
+    fetchAdmins();
+  }, []);
 
   // Delete modal
   const handleDeleteClick = (id: number) => {
@@ -110,7 +110,6 @@ useEffect(() => {
     }
   };
 
-
   const cancelEdit = () => {
     setEditingId(null);
     setEditData({});
@@ -126,6 +125,10 @@ useEffect(() => {
           variant="light"
           className="px-4 py-2 rounded-pill shadow-sm"
           onClick={() => navigate('/add-admin')}
+          style={{
+            backgroundColor: '#cfdde6',
+            color: '#3A6EA5',
+          }}
         >
           Add
         </Button>
@@ -183,19 +186,10 @@ useEffect(() => {
                     </Form.Select>
                   </td>
                   <td>
-                    <Button
-                      variant="outline-success"
-                      size="sm"
-                      onClick={saveEdit}
-                      className="me-2"
-                    >
+                    <Button variant="outline-success" size="sm" onClick={saveEdit} className="me-2">
                       <i className="fas fa-save"></i>
                     </Button>
-                    <Button
-                      variant="outline-secondary"
-                      size="sm"
-                      onClick={cancelEdit}
-                    >
+                    <Button variant="outline-secondary" size="sm" onClick={cancelEdit}>
                       <i className="fas fa-times"></i>
                     </Button>
                   </td>
@@ -225,10 +219,9 @@ useEffect(() => {
                 </>
               )}
             </tr>
-        ))}
-      </tbody>
-    </Table>
-
+          ))}
+        </tbody>
+      </Table>
 
       {/* Confirm Delete Modal */}
       <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)} centered>
