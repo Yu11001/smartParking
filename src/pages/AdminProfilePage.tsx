@@ -119,7 +119,6 @@ const AdminProfilePage = () => {
     }
   };
 
-
   const cancelEdit = () => {
     setEditingId(null);
     setEditData({});
@@ -135,6 +134,10 @@ const AdminProfilePage = () => {
           variant="light"
           className="px-4 py-2 rounded-pill shadow-sm"
           onClick={() => navigate('/add-admin')}
+          style={{
+            backgroundColor: '#cfdde6',
+            color: '#3A6EA5',
+          }}
         >
           Add
         </Button>
@@ -192,19 +195,10 @@ const AdminProfilePage = () => {
                     </Form.Select>
                   </td>
                   <td>
-                    <Button
-                      variant="outline-success"
-                      size="sm"
-                      onClick={saveEdit}
-                      className="me-2"
-                    >
+                    <Button variant="outline-success" size="sm" onClick={saveEdit} className="me-2">
                       <i className="fas fa-save"></i>
                     </Button>
-                    <Button
-                      variant="outline-secondary"
-                      size="sm"
-                      onClick={cancelEdit}
-                    >
+                    <Button variant="outline-secondary" size="sm" onClick={cancelEdit}>
                       <i className="fas fa-times"></i>
                     </Button>
                   </td>

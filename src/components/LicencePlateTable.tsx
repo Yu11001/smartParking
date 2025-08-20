@@ -133,7 +133,14 @@ const LicencePlateTable: React.FC = () => {
         <h3 className="mb-4 fw-bold" style={{ color: '#3A6EA5' }}>
           Licence Plate
         </h3>
-        <Button variant="light" onClick={handleAdd}>
+        <Button
+          variant="light"
+          onClick={handleAdd}
+          style={{
+            backgroundColor: '#cfdde6',
+            color: '#3A6EA5',
+          }}
+        >
           Add
         </Button>
       </div>
@@ -212,7 +219,7 @@ const LicencePlateTable: React.FC = () => {
         </Modal.Footer>
       </Modal>
 
-      {/* Edit Modal */}    
+      {/* Edit Modal */}
       <Modal show={showEditModal} onHide={() => setShowEditModal(false)} centered>
         <Modal.Header closeButton>
           <Modal.Title>Edit Plate</Modal.Title>
@@ -224,9 +231,7 @@ const LicencePlateTable: React.FC = () => {
               type="text"
               className="form-control"
               value={editForm.plate_number}
-              onChange={(e) =>
-                setEditForm({ ...editForm, plate_number: e.target.value })
-              }
+              onChange={(e) => setEditForm({ ...editForm, plate_number: e.target.value })}
             />
           </div>
           <div className="mb-3">
@@ -246,9 +251,7 @@ const LicencePlateTable: React.FC = () => {
               type="email"
               className="form-control"
               value={editForm.user_email}
-              onChange={(e) =>
-                setEditForm({ ...editForm, user_email: e.target.value })
-              }
+              onChange={(e) => setEditForm({ ...editForm, user_email: e.target.value })}
             />
           </div>
           <div className="mb-3">
@@ -272,7 +275,6 @@ const LicencePlateTable: React.FC = () => {
           </Button>
         </Modal.Footer>
       </Modal>
-
     </div>
   );
 };

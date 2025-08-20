@@ -11,34 +11,33 @@ const Register: React.FC = () => {
   const [photo, setPhoto] = useState<File | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  if (!photo) {
-    toast.error("Please upload a photo.");
-    return;
-  }
+    if (!photo) {
+      toast.error('Please upload a photo.');
+      return;
+    }
 
-  const formData = new FormData();
-  formData.append('name', name);
-  formData.append('email', email);
-  formData.append('plate_number', plateNumber);
-  formData.append('photo', photo);
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('email', email);
+    formData.append('plate_number', plateNumber);
+    formData.append('photo', photo);
 
-  try {
-    const response = await axiosInstance.post('/register', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
+    try {
+      const response = await axiosInstance.post('/register', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
 
-    console.log(response.data);
-    toast.success("Successfully registered!");
-  } catch (error: any) {
-    console.error(error);
-    toast.error("Failed to register. Please try again.");
-  }
-};
-
+      console.log(response.data);
+      toast.success('Successfully registered!');
+    } catch (error: any) {
+      console.error(error);
+      toast.error('Failed to register. Please try again.');
+    }
+  };
 
   return (
     <div
@@ -72,37 +71,59 @@ const Register: React.FC = () => {
         }}
       >
         <h3 className="fw-bold" style={{ color: '#3A6EA5' }}>
-          Registration Request
+          License Plate Registration
         </h3>
         <form onSubmit={handleSubmit} className="row mt-4">
           <div className="col-md-6">
             <div className="mb-3">
+              <p className="m-1" style={{ color: '#3A6EA5' }}>
+                <b>Email:</b>
+              </p>
               <input
                 type="email"
                 className="form-control bg-secondary bg-opacity-25 text-primary rounded-3"
-                placeholder="Email"
+                placeholder="e.g. user@email.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
               />
             </div>
             <div className="mb-3">
+              <p className="m-1" style={{ color: '#3A6EA5' }}>
+                <b>Name:</b>
+              </p>
               <input
                 type="text"
                 className="form-control bg-secondary bg-opacity-25 text-primary rounded-3"
-                placeholder="Name"
+                placeholder="e.g. David Adam"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
               />
             </div>
             <div className="mb-3">
+              <p className="m-1" style={{ color: '#3A6EA5' }}>
+                <b>License Plate Number:</b>
+              </p>
               <input
                 type="text"
                 className="form-control bg-secondary bg-opacity-25 text-primary rounded-3"
-                placeholder="Plate Number"
+                placeholder="e.g. AA1009"
                 value={plateNumber}
                 onChange={(e) => setPlateNumber(e.target.value)}
+                required
+              />
+            </div>
+            <div className="mb-3">
+              <p className="m-1" style={{ color: '#3A6EA5' }}>
+                <b>License Plate Province:</b>
+              </p>
+              <input
+                type="text"
+                className="form-control bg-secondary bg-opacity-25 text-primary rounded-3"
+                placeholder="e.g. Chiang Mai"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
                 required
               />
             </div>
@@ -115,10 +136,12 @@ const Register: React.FC = () => {
             >
               <label
                 htmlFor="photo"
-                className="w-100 h-100 text-center"
+                className="w-100 h-100 d-flex align-items-center justify-content-center text-center"
                 style={{ cursor: 'pointer' }}
               >
-                {photo ? photo.name : 'Photo'}
+                {photo
+                  ? photo.name
+                  : 'Click here to upload your license plate photo with jpg or png format'}
                 <input
                   type="file"
                   id="photo"

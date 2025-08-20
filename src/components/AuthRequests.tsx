@@ -118,6 +118,7 @@ const AuthRequests: React.FC = () => {
                       size="sm"
                       className="me-2"
                       onClick={() => handleStatusUpdate(req.id, 'approved')}
+                      title="Approve"
                     >
                       <FaCheck />
                     </Button>
@@ -125,6 +126,7 @@ const AuthRequests: React.FC = () => {
                       variant="outline-danger"
                       size="sm"
                       onClick={() => handleStatusUpdate(req.id, 'rejected')}
+                      title="Reject"
                     >
                       <FaTimes />
                     </Button>
