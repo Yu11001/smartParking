@@ -56,16 +56,6 @@ const Login: React.FC = () => {
           width: '400px',
         }}
       >
-        <button
-          type="button"
-          className="btn mt-1 position-absolute top-0 left-0 pt-2 text-muted"
-          onClick={() => navigate('/')}
-          style={{
-            textDecoration: 'none',
-          }}
-        >
-          &lt; Homepage
-        </button>
 
         <div className="p-5 pt-2">
           <h2 className="text-center mb-4 fw-bold" style={{ fontSize: '2rem' }}>
@@ -100,19 +90,33 @@ const Login: React.FC = () => {
                 }}
               />
             </div>
-            <div className="d-flex justify-content-center">
+            {error && <p className="text-danger text-center">{error}</p>}
+            <div className="d-flex flex-column gap-3 justify-content-center">
               <button
                 type="submit"
                 className="btn"
                 onClick={handleSubmit}
                 style={{
-                  backgroundColor: '#cfdde6',
+                  backgroundColor: '#cffee3',
                   borderRadius: '2rem',
                   padding: '0.5rem 2rem',
                   color: '#000',
                 }}
               >
                 Login
+              </button>
+              <button
+                type="button"
+                className="btn"
+                style={{
+                  backgroundColor: '#cfdde6',
+                  borderRadius: '2rem',
+                  padding: '0.5rem 2rem',
+                  color: '#000',
+                }}
+                onClick={() => navigate('/')}
+              >
+                &lt; Back to Home
               </button>
             </div>
           </form>

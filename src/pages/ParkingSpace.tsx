@@ -4,7 +4,7 @@ import Hls from 'hls.js';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const streams = ['parking', 'parking2', 'license', 'license1'];
+const streams = ['parking', 'parking2', 'license', 'license1', 'infer-live'];
 
 const ParkingSpace: React.FC = () => {
   const [streamIndex, setStreamIndex] = useState(0);
