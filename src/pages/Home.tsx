@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
-import axios from '../api/axios';
+import axiosInstance from '../api/axios';
 
 interface ParkingSnapshot {
   available_spaces: number;
@@ -16,7 +16,7 @@ const Home: React.FC = () => {
   useEffect(() => {
     const fetchSnapshot = async () => {
       try {
-        const response = await axios.get('/parking/snapshot/latest');
+        const response = await axiosInstance.get('/parking/snapshot/latest');
         setSnapshot(response.data);
         setLastUpdated(new Date().toLocaleString());
       } catch (error) {
