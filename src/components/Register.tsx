@@ -114,7 +114,7 @@ const Register: React.FC = () => {
                 required
               />
             </div>
-            <div className="mb-3">
+            {/* <div className="mb-3">
               <p className="m-1" style={{ color: '#3A6EA5' }}>
                 <b>License Plate Province:</b>
               </p>
@@ -126,7 +126,7 @@ const Register: React.FC = () => {
                 onChange={(e) => setName(e.target.value)}
                 required
               />
-            </div>
+            </div> */}
           </div>
 
           <div className="col-md-6 d-flex align-items-start justify-content-center">
