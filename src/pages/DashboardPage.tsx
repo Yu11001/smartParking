@@ -32,12 +32,28 @@ const DashboardPage: React.FC = () => {
     fetchSnapshot();
   }, []);
 
-  const handleShowModal = async () => {
+  const handleParking1 = async () => {
     setShowModal(true);
     setLoadingImage(true);
     try {
       const response = await axiosInstance.get('/parking/inference', {
-        responseType: 'blob', // important to get binary data
+        responseType: 'blob', 
+      });
+      const imageUrl = URL.createObjectURL(response.data);
+      setImageSrc(imageUrl);
+    } catch (error) {
+      console.error('Error fetching inference image:', error);
+    } finally {
+      setLoadingImage(false);
+    }
+  };
+
+    const handleParking2 = async () => {
+    setShowModal(true);
+    setLoadingImage(true);
+    try {
+      const response = await axiosInstance.get('/parking/inference2', {
+        responseType: 'blob', 
       });
       const imageUrl = URL.createObjectURL(response.data);
       setImageSrc(imageUrl);
@@ -68,10 +84,22 @@ const DashboardPage: React.FC = () => {
               <Card
                 className="p-3 shadow-sm"
                 style={{ cursor: 'pointer' }}
-                onClick={handleShowModal}
+                onClick={handleParking1}
               >
                 <Card.Body>
-                  <Card.Title>Run AI Parking Detection</Card.Title>
+                  <Card.Title>Run AI Parking 1 Detection</Card.Title>
+                  <Card.Text>Click to see live inference snapshot</Card.Text>
+                </Card.Body>
+              </Card>
+            </div>
+            <div className="col-md-4">
+              <Card
+                className="p-3 shadow-sm"
+                style={{ cursor: 'pointer' }}
+                onClick={handleParking2}
+              >
+                <Card.Body>
+                  <Card.Title>Run AI Parking 2 Detection</Card.Title>
                   <Card.Text>Click to see live inference snapshot</Card.Text>
                 </Card.Body>
               </Card>
