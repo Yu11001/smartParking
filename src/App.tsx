@@ -40,15 +40,15 @@ const AppContent: React.FC = () => {
           <Route path="/" element={<Homepage />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
-          {/* <Route element={<ProtectedRoute />}> */}
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/admin-profile" element={<AdminProfile />} />
-          <Route path="/add-admin" element={<AddAdminProfile />} />
-          <Route path="/licence-plate" element={<LicencePlate />} />
-          <Route path="/parking-space" element={<ParkingSpace />} />
-          <Route path="/auth-requests" element={<AuthRequests />} />
-          <Route path="/add-licence" element={<AddLicencePlate />} />
-          {/* </Route> */}
+          <Route element={<ProtectedRoute />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/admin-profile" element={<AdminProfile />} />
+            <Route path="/add-admin" element={<AddAdminProfile />} />
+            <Route path="/licence-plate" element={<LicencePlate />} />
+            <Route path="/parking-space" element={<ParkingSpace />} />
+            <Route path="/auth-requests" element={<AuthRequests />} />
+            <Route path="/add-licence" element={<AddLicencePlate />} />
+          </Route>
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </div>
