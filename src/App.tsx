@@ -18,8 +18,16 @@ const AppContent: React.FC = () => {
   const hideSidebarRoutes = ['/', '/login', '/register'];
 
   const isKnownRoute = [
-    '/', '/login', '/register', '/dashboard', '/admin-profile', 
-    '/add-admin', '/licence-plate', '/parking-space', '/auth-requests', '/add-licence'
+    '/',
+    '/login',
+    '/register',
+    '/dashboard',
+    '/admin-profile',
+    '/add-admin',
+    '/licence-plate',
+    '/parking-space',
+    '/auth-requests',
+    '/add-licence',
   ].includes(location.pathname);
 
   const hideSidebar = hideSidebarRoutes.includes(location.pathname) || !isKnownRoute;
@@ -32,15 +40,15 @@ const AppContent: React.FC = () => {
           <Route path="/" element={<Homepage />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
-          <Route element={<ProtectedRoute />}>
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/admin-profile" element={<AdminProfile />} />
-            <Route path="/add-admin" element={<AddAdminProfile />} />
-            <Route path="/licence-plate" element={<LicencePlate />} />
-            <Route path="/parking-space" element={<ParkingSpace />} />
-            <Route path="/auth-requests" element={<AuthRequests />} />
-            <Route path="/add-licence" element={<AddLicencePlate />} />
-          </Route>
+          {/* <Route element={<ProtectedRoute />}> */}
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/admin-profile" element={<AdminProfile />} />
+          <Route path="/add-admin" element={<AddAdminProfile />} />
+          <Route path="/licence-plate" element={<LicencePlate />} />
+          <Route path="/parking-space" element={<ParkingSpace />} />
+          <Route path="/auth-requests" element={<AuthRequests />} />
+          <Route path="/add-licence" element={<AddLicencePlate />} />
+          {/* </Route> */}
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </div>

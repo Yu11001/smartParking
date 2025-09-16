@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Table, Button, Spinner, Dropdown, Pagination } from 'react-bootstrap';
 import { FaCheck, FaTimes } from 'react-icons/fa';
 import axiosInstance from '../api/axios';
+import Layout from '../components/Layout';
 
 interface AuthRequest {
   id: number;
@@ -55,7 +56,9 @@ const AuthRequests: React.FC = () => {
       await axiosInstance.put(`/requests/${id}`, { status: newStatus });
       setRequests((prev) =>
         prev.map((req) =>
-          req.id === id ? { ...req, status: newStatus.charAt(0).toUpperCase() + newStatus.slice(1) } : req
+          req.id === id
+            ? { ...req, status: newStatus.charAt(0).toUpperCase() + newStatus.slice(1) }
+            : req
         )
       );
     } catch (error) {
@@ -68,85 +71,93 @@ const AuthRequests: React.FC = () => {
   }
 
   return (
-    <div className="p-3">
-      <div className="d-flex justify-content-between align-items-center mb-3">
-        <h3 className="mb-4 fw-bold" style={{ color: '#3A6EA5' }}>
-          Authorization Requests
-        </h3>
-        <Dropdown onSelect={(e) => setStatusFilter(e === 'all' ? null : e)}>
-          <Dropdown.Toggle variant="secondary" id="dropdown-basic">
-            Filter by Status: {statusFilter || 'All'}
-          </Dropdown.Toggle>
-          <Dropdown.Menu>
-            <Dropdown.Item eventKey="all">All</Dropdown.Item>
-            <Dropdown.Item eventKey="pending">Pending</Dropdown.Item>
-            <Dropdown.Item eventKey="approved">Approved</Dropdown.Item>
-            <Dropdown.Item eventKey="rejected">Rejected</Dropdown.Item>
-          </Dropdown.Menu>
-        </Dropdown>
-      </div>
-      <Table bordered>
-        <thead className="table-light">
-          <tr>
-            <th>Name</th>
-            <th>Plate Number</th>
-            <th>Email</th>
-            <th>Photo</th>
-            <th>Status</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {requests.map((req) => (
-            <tr key={req.id} className="table-row-hover">
-              <td>{req.name}</td>
-              <td>{req.plateNumber}</td>
-              <td>{req.email}</td>
-              <td>
-                <img
-                  src={req.photo}
-                  alt="plate"
-                  style={{ width: '80px', height: '50px', objectFit: 'cover' }}
-                />
-              </td>
-              <td>{req.status}</td>
-              <td>
-                {req.status === 'pending' ? (
-                  <>
-                    <Button
-                      variant="outline-success"
-                      size="sm"
-                      className="me-2"
-                      onClick={() => handleStatusUpdate(req.id, 'approved')}
-                      title="Approve"
-                    >
-                      <FaCheck />
-                    </Button>
-                    <Button
-                      variant="outline-danger"
-                      size="sm"
-                      onClick={() => handleStatusUpdate(req.id, 'rejected')}
-                      title="Reject"
-                    >
-                      <FaTimes />
-                    </Button>
-                  </>
-                ) : (
-                  <span className="text-muted">Processed</span>
-                )}
-              </td>
+    <Layout>
+      <div className="p-3">
+        <div className="d-flex justify-content-between align-items-center mb-3">
+          <h3 className="mb-4 fw-bold" style={{ color: '#3A6EA5' }}>
+            Authorization Requests
+          </h3>
+          <Dropdown onSelect={(e) => setStatusFilter(e === 'all' ? null : e)}>
+            <Dropdown.Toggle variant="secondary" id="dropdown-basic">
+              Filter by Status: {statusFilter || 'All'}
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              <Dropdown.Item eventKey="all">All</Dropdown.Item>
+              <Dropdown.Item eventKey="pending">Pending</Dropdown.Item>
+              <Dropdown.Item eventKey="approved">Approved</Dropdown.Item>
+              <Dropdown.Item eventKey="rejected">Rejected</Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+        </div>
+        <Table bordered>
+          <thead className="table-light">
+            <tr>
+              <th>Name</th>
+              <th>Plate Number</th>
+              <th>Email</th>
+              <th>Photo</th>
+              <th>Status</th>
+              <th>Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </Table>
-      <div className="d-flex justify-content-center">
-        <Pagination>
-          <Pagination.Prev onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1} />
-          <Pagination.Item>{currentPage}</Pagination.Item>
-          <Pagination.Next onClick={() => setCurrentPage(currentPage + 1)} disabled={requests.length < itemsPerPage} />
-        </Pagination>
+          </thead>
+          <tbody>
+            {requests.map((req) => (
+              <tr key={req.id} className="table-row-hover">
+                <td>{req.name}</td>
+                <td>{req.plateNumber}</td>
+                <td>{req.email}</td>
+                <td>
+                  <img
+                    src={req.photo}
+                    alt="plate"
+                    style={{ width: '80px', height: '50px', objectFit: 'cover' }}
+                  />
+                </td>
+                <td>{req.status}</td>
+                <td>
+                  {req.status === 'pending' ? (
+                    <>
+                      <Button
+                        variant="outline-success"
+                        size="sm"
+                        className="me-2"
+                        onClick={() => handleStatusUpdate(req.id, 'approved')}
+                        title="Approve"
+                      >
+                        <FaCheck />
+                      </Button>
+                      <Button
+                        variant="outline-danger"
+                        size="sm"
+                        onClick={() => handleStatusUpdate(req.id, 'rejected')}
+                        title="Reject"
+                      >
+                        <FaTimes />
+                      </Button>
+                    </>
+                  ) : (
+                    <span className="text-muted">Processed</span>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+        <div className="d-flex justify-content-center">
+          <Pagination>
+            <Pagination.Prev
+              onClick={() => setCurrentPage(currentPage - 1)}
+              disabled={currentPage === 1}
+            />
+            <Pagination.Item>{currentPage}</Pagination.Item>
+            <Pagination.Next
+              onClick={() => setCurrentPage(currentPage + 1)}
+              disabled={requests.length < itemsPerPage}
+            />
+          </Pagination>
+        </div>
       </div>
-    </div>
+    </Layout>
   );
 };
 
