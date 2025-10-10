@@ -6,6 +6,7 @@ import Dashboard from './pages/DashboardPage';
 import AdminProfile from './pages/AdminProfilePage';
 import ParkingSpace from './pages/ParkingSpace';
 import LicencePlate from './pages/LicencePlate';
+import EntryRecordsPage from './pages/EntryRecordsPage';
 import Register from './components/Register';
 import AddAdminProfile from './components/AddAdminProfile';
 import AuthRequests from './components/AuthRequests';
@@ -25,6 +26,7 @@ const AppContent: React.FC = () => {
     '/admin-profile',
     '/add-admin',
     '/licence-plate',
+    '/entry-records',
     '/parking-space',
     '/auth-requests',
     '/add-licence',
@@ -45,6 +47,7 @@ const AppContent: React.FC = () => {
             <Route path="/admin-profile" element={<AdminProfile />} />
             <Route path="/add-admin" element={<AddAdminProfile />} />
             <Route path="/licence-plate" element={<LicencePlate />} />
+            <Route path="/entry-records" element={<EntryRecordsPage />} />
             <Route path="/parking-space" element={<ParkingSpace />} />
             <Route path="/auth-requests" element={<AuthRequests />} />
             <Route path="/add-licence" element={<AddLicencePlate />} />

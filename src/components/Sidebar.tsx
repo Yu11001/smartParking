@@ -35,6 +35,9 @@ const Sidebar: React.FC = () => {
         <NavLink to="/licence-plate" className="sidebar-link">
           <i className="fas fa-id-card me-2"></i> Licence Plate
         </NavLink>
+        <NavLink to="/entry-records" className="sidebar-link">
+          <i className="fas fa-book me-2"></i> Entry Records
+        </NavLink>
         <NavLink to="/auth-requests" className="sidebar-link">
           <i className="fas fa-user-check me-2"></i> Auth Requests
         </NavLink>

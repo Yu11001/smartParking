@@ -10,8 +10,20 @@ const AddAdminProfile: React.FC = () => {
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [role, setRole] = useState('operator');
+  const [emailError, setEmailError] = useState('');
+
+  const validateEmail = (email: string) => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(String(email).toLowerCase());
+  };
 
   const handleRegister = async () => {
+    if (!validateEmail(email)) {
+      setEmailError('Invalid email format.');
+      return;
+    }
+    setEmailError('');
+
     try {
       const payload = {
         username: name,
@@ -49,8 +61,17 @@ const AddAdminProfile: React.FC = () => {
               placeholder="Email"
               className="text-center bg-light border-0 rounded-pill"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                if (emailError) {
+                  setEmailError('');
+                }
+              }}
+              isInvalid={!!emailError}
             />
+            <Form.Control.Feedback type="invalid">
+              {emailError}
+            </Form.Control.Feedback>
           </Form.Group>
 
           <Form.Group className="mb-3">
